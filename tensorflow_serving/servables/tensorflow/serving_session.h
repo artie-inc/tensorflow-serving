@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "tensorflow/core/platform/logging.h"
 #include "tensorflow/core/public/session.h"
@@ -58,6 +59,7 @@ class ServingSessionWrapper : public ServingSession {
              const std::vector<string>& output_tensor_names,
              const std::vector<string>& target_node_names,
              std::vector<Tensor>* outputs) override {
+    std::cout << "ServingSessionWrapper.Run() a" << std::endl;
     return wrapped_->Run(inputs, output_tensor_names, target_node_names,
                          outputs);
   }
@@ -67,6 +69,7 @@ class ServingSessionWrapper : public ServingSession {
              const std::vector<string>& output_tensor_names,
              const std::vector<string>& target_node_names,
              std::vector<Tensor>* outputs, RunMetadata* run_metadata) override {
+    std::cout << "ServingSessionWrapper.Run() a" << std::endl;
     return wrapped_->Run(run_options, inputs, output_tensor_names,
                          target_node_names, outputs, run_metadata);
   }

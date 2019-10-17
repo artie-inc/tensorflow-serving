@@ -2,7 +2,8 @@
 
 package(
     default_visibility = [
-        "//tensorflow_serving:internal",
+#        "//tensorflow_serving:internal",
+        "//visibility:public",
     ],
     features = ["-layering_check"],
 )
@@ -83,7 +84,8 @@ cc_library(
     srcs = ["hash.cc"],
     hdrs = ["hash.h"],
     deps = [
-        "@org_tensorflow//tensorflow/core:lib",
+        #"@org_tensorflow//tensorflow/core:lib",
+        "//tensorflow/core:lib",
     ],
 )
 
@@ -162,7 +164,8 @@ cc_library(
     hdrs = ["optional.h"],
     visibility = ["//visibility:public"],
     deps = [
-        "@org_tensorflow//tensorflow/core:lib",
+        #"@org_tensorflow//tensorflow/core:lib",
+        "//tensorflow/core:lib",
     ],
 )
 
@@ -194,7 +197,8 @@ cc_library(
     name = "cleanup",
     hdrs = ["cleanup.h"],
     deps = [
-        "@org_tensorflow//tensorflow/core:lib",
+        #"@org_tensorflow//tensorflow/core:lib",
+        "//tensorflow/core:lib",
     ],
 )
 

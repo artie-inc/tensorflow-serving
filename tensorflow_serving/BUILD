@@ -1,7 +1,8 @@
 # Description: Tensorflow Serving.
 
 package(
-    default_visibility = ["//tensorflow_serving:internal"],
+#    default_visibility = ["//tensorflow_serving:internal"],
+     default_visibility = ["//visibility:public"],
 )
 
 licenses(["notice"])  # Apache 2.0
