@@ -381,10 +381,14 @@ cc_library(
         "//visibility:public",
     ],
     deps = [
-        "@org_tensorflow//tensorflow/core:core_cpu",
-        "@org_tensorflow//tensorflow/core:lib",
-        "@org_tensorflow//tensorflow/core:protos_all_cc",
-        "@org_tensorflow//tensorflow/core:tensorflow",
+        #"@org_tensorflow//tensorflow/core:core_cpu",
+        #"@org_tensorflow//tensorflow/core:lib",
+        #"@org_tensorflow//tensorflow/core:protos_all_cc",
+        #"@org_tensorflow//tensorflow/core:tensorflow",
+        "//tensorflow/core:core_cpu",
+        "//tensorflow/core:lib",
+        "//tensorflow/core:protos_all_cc",
+        "//tensorflow/core:tensorflow",
     ],
 )
 

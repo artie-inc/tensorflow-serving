@@ -14,7 +14,7 @@ tensorflow_http_archive(
     sha256 = "c4da79385dfbfb30c1aaf73fae236bc6e208c3171851dfbe0e1facf7ca127a6a",
     git_commit = "87989f69597d6b2d60de8f112e1e3cea23be7298",
 )
-
+jdkjfkdjkfjdkjf
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # START: Upstream TensorFlow dependencies

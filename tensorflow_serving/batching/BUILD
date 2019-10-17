@@ -1,7 +1,8 @@
 # Description: Tensorflow Serving batching.
 
 package(
-    default_visibility = ["//tensorflow_serving:internal"],
+#    default_visibility = ["//tensorflow_serving:internal"],
+    default_visibility = ["//visibility:public"],
     features = ["-layering_check"],
 )
 
@@ -59,12 +60,29 @@ cc_library(
         "//tensorflow_serving/util:cleanup",
         "//tensorflow_serving/util:hash",
         "//tensorflow_serving/util:optional",
-        "@org_tensorflow//tensorflow/core:core_cpu",
-        "@org_tensorflow//tensorflow/core:framework",
-        "@org_tensorflow//tensorflow/core:lib",
-        "@org_tensorflow//tensorflow/core:tensorflow",
-        "@org_tensorflow//tensorflow/core/kernels/batching_util:basic_batch_scheduler",
-        "@org_tensorflow//tensorflow/core/kernels/batching_util:batch_scheduler",
+        #"@org_tensorflow//tensorflow/core:core_cpu",
+        #"@org_tensorflow//tensorflow/core:framework",
+        #"@org_tensorflow//tensorflow/core:lib",
+        #"@org_tensorflow//tensorflow/core:tensorflow",
+        #"@org_tensorflow//tensorflow/core/kernels/batching_util:basic_batch_scheduler",
+        #"@org_tensorflow//tensorflow/core/kernels/batching_util:batch_scheduler",
+        "//tensorflow/core:core_cpu",
+        "//tensorflow/core:framework",
+        "//tensorflow/core:lib",
+        "//tensorflow/core:tensorflow",
+        "//tensorflow/core/kernels/batching_util:basic_batch_scheduler",
+        "//tensorflow/core/kernels/batching_util:batch_scheduler",
+    ],
+)
+
+cc_library(
+    name = "batching_session_source",
+    srcs = ["batching_session.cc"],
+    hdrs = ["batching_session.h"],
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
     ],
 )
 
@@ -123,8 +141,10 @@ cc_library(
     srcs = ["batching_util.cc"],
     hdrs = ["batching_util.h"],
     deps = [
-        "@org_tensorflow//tensorflow/core:framework",
-        "@org_tensorflow//tensorflow/core:lib",
+        #"@org_tensorflow//tensorflow/core:framework",
+        #"@org_tensorflow//tensorflow/core:lib",
+        "//tensorflow/core:framework",
+        "//tensorflow/core:lib",
     ],
 )
 
