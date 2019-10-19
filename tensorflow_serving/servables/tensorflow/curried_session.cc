@@ -34,7 +34,6 @@ Status CurriedSession::Run(const std::vector<std::pair<string, Tensor>>& inputs,
                            const std::vector<string>& output_tensor_names,
                            const std::vector<string>& target_node_names,
                            std::vector<Tensor>* outputs) {
-  std::cout << "CurriedSession::Run() 1" << std::endl;
   TF_RETURN_IF_ERROR(ValidateExplicitInputsDontMatchCurriedInputs(inputs));
   const std::vector<std::pair<string, Tensor>> combined_inputs =
       AddCurriedInputs(inputs);
@@ -48,7 +47,6 @@ Status CurriedSession::Run(const RunOptions& run_options,
                            const std::vector<string>& target_node_names,
                            std::vector<Tensor>* outputs,
                            RunMetadata* run_metadata) {
-  std::cout << "CurriedSession::Run() 2" << std::endl;
   TF_RETURN_IF_ERROR(ValidateExplicitInputsDontMatchCurriedInputs(inputs));
   const std::vector<std::pair<string, Tensor>> combined_inputs =
       AddCurriedInputs(inputs);

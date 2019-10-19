@@ -17,6 +17,7 @@ limitations under the License.
 
 #include <stddef.h>
 #include <iostream>
+#include <thread>
 
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor_shape.h"
@@ -317,9 +318,6 @@ Status BatchingSession::Run(
 
   std::cout << "BatchingSession::Run() scheduling task" << std::endl;
   TF_RETURN_IF_ERROR(batch_scheduler->Schedule(&task));
-
-  std::cout << "doStuff!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-  done.doStuff();
 
   std::cout << "BatchingSession::Run() waiting for notifications" << std::endl;
   done.WaitForNotification();
