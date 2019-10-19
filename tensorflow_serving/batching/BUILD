@@ -1,8 +1,7 @@
 # Description: Tensorflow Serving batching.
 
 package(
-#    default_visibility = ["//tensorflow_serving:internal"],
-    default_visibility = ["//visibility:public"],
+    default_visibility = ["//tensorflow_serving:internal"],
     features = ["-layering_check"],
 )
 
@@ -72,17 +71,6 @@ cc_library(
         "//tensorflow/core:tensorflow",
         "//tensorflow/core/kernels/batching_util:basic_batch_scheduler",
         "//tensorflow/core/kernels/batching_util:batch_scheduler",
-    ],
-)
-
-cc_library(
-    name = "batching_session_source",
-    srcs = ["batching_session.cc"],
-    hdrs = ["batching_session.h"],
-    visibility = [
-        "//visibility:public",
-    ],
-    deps = [
     ],
 )
 
