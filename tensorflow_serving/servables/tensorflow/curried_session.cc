@@ -13,9 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include <iostream>
 #include "tensorflow_serving/servables/tensorflow/curried_session.h"
-
 
 namespace tensorflow {
 namespace serving {

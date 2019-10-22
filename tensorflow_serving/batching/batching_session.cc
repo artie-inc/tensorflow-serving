@@ -255,7 +255,7 @@ Status BatchingSession::Run(
     const std::vector<string>& output_tensor_names,
     const std::vector<string>& target_node_names,
     std::vector<Tensor>* outputs) {
-  std::cout << "BatchingSession::Run()" << std::endl;
+  // std::cout << "BatchingSession::Run()" << std::endl;
   RunMetadata run_metadata;
   return Run(RunOptions(), inputs, output_tensor_names, target_node_names,
              outputs, &run_metadata);
@@ -267,7 +267,7 @@ Status BatchingSession::Run(
     const std::vector<string>& output_tensor_names,
     const std::vector<string>& target_node_names, std::vector<Tensor>* outputs,
     RunMetadata* run_metadata) {
-  std::cout << "BatchingSession::Run() with RunOptions" << std::endl;
+  // std::cout << "BatchingSession::Run() with RunOptions" << std::endl;
   if (!target_node_names.empty()) {
     return errors::PermissionDenied(
         "BatchingSession does not support target nodes");
@@ -277,9 +277,9 @@ Status BatchingSession::Run(
   const TensorSignature signature =
       TensorSignatureFromRunArgs(inputs, output_tensor_names);
   auto batch_scheduler_it = batch_schedulers_.find(signature);
-  std::cout << "BatchingSession::Run checking batch_scheduler" << std::endl;
+  // std::cout << "BatchingSession::Run checking batch_scheduler" << std::endl;
   if (batch_scheduler_it == batch_schedulers_.end()) {
-    std::cout << "BatchingSession::Run run call doesn't match batching signatures" << std::endl;
+    // std::cout << "BatchingSession::Run run call doesn't match batching signatures" << std::endl;
     // We have a Run() call that doesn't match one of our batching signatures.
     // Run it in-line.
     static uint64 last_log_message_secs = 0;
@@ -291,12 +291,12 @@ Status BatchingSession::Run(
                    << TensorSignatureDebugString(signature);
       last_log_message_secs = now_secs;
     }
-    std::cout << "BatchingSession::Run running session inline" << std::endl;
+    // std::cout << "BatchingSession::Run running session inline" << std::endl;
     return wrapped_->Run(run_options, inputs, output_tensor_names,
                          target_node_names, outputs, run_metadata);
   }
   else {
-    std::cout << "BatchingSession::Run matches batch signature" << std::endl;
+    // std::cout << "BatchingSession::Run matches batch signature" << std::endl;
   }
   BatchScheduler<BatchingSessionTask>* batch_scheduler =
       batch_scheduler_it->second.get();
@@ -316,12 +316,12 @@ Status BatchingSession::Run(
   task->outputs = outputs;
   task->run_metadata = run_metadata;
 
-  std::cout << "BatchingSession::Run() scheduling task" << std::endl;
+  // std::cout << "BatchingSession::Run() scheduling task" << std::endl;
   TF_RETURN_IF_ERROR(batch_scheduler->Schedule(&task));
 
-  std::cout << "BatchingSession::Run() waiting for notifications" << std::endl;
+  // std::cout << "BatchingSession::Run() waiting for notifications" << std::endl;
   done.WaitForNotification();
-  std::cout << "BatchingSession::Run() done waiting for notifications" << std::endl;
+  // std::cout << "BatchingSession::Run() done waiting for notifications" << std::endl;
   return status;
 }
 
@@ -365,13 +365,13 @@ Status BatchingSession::ComputeInputSize(
 }
 
 int BatchingSession::RoundToLowestAllowedBatchSize(int batch_size) const {
-  std::cout << "RoundToLowestAllowedBatchSize start batch_size=" << batch_size << std::endl;
+  // std::cout << "RoundToLowestAllowedBatchSize start batch_size=" << batch_size << std::endl;
   if (options_.allowed_batch_sizes.empty()) {
     return batch_size;
   }
-  std::cout << "RoundToLowestAllowedBatchSize looping" << std::endl;
+  // std::cout << "RoundToLowestAllowedBatchSize looping" << std::endl;
   for (int allowed_size : options_.allowed_batch_sizes) {
-    std::cout << "RoundToLowestAllowedBatchSize allowed_size=" << allowed_size << std::endl;
+    // std::cout << "RoundToLowestAllowedBatchSize allowed_size=" << allowed_size << std::endl;
     if (allowed_size >= batch_size) {
       return allowed_size;
     }
@@ -395,7 +395,7 @@ Status BatchingSession::MergeInputTensors(
 
   const int lowestallowed = RoundToLowestAllowedBatchSize(batch.size());
 
-  std::cout << "BatchingSession::MergeInputTensors padcalc=" << lowestallowed << "-" << batch.size() << " padding_size=" << padding_size << std::endl;
+  // std::cout << "BatchingSession::MergeInputTensors padcalc=" << lowestallowed << "-" << batch.size() << " padding_size=" << padding_size << std::endl;
 
   // For each input tensor name, a vector of tensors from the individual tasks.
   std::map<string, std::vector<Tensor>> tensors_to_merge;
@@ -521,11 +521,11 @@ Status BatchingSession::SplitOutputTensors(
           "Batched output tensor has 0 dimensions");
     }
 
-    for (int i=0; i< tensor.shape().dims(); i++) {
-      std::cout << "SplitOutputTensors() dim[" << i << "]=" << tensor.shape().dim_size(i) << std::endl;
-    }
+    // for (int i=0; i< tensor.shape().dims(); i++) {
+    //   std::cout << "SplitOutputTensors() dim[" << i << "]=" << tensor.shape().dim_size(i) << std::endl;
+    // }
 
-    std::cout << i << " " << tensor_name << ": tensor.shape().dim_size(0)=" << tensor.shape().dim_size(0) << " batch->size=" << batch->size() << " padding_size=" << padding_size << std::endl;
+    // std::cout << i << " " << tensor_name << ": tensor.shape().dim_size(0)=" << tensor.shape().dim_size(0) << " batch->size=" << batch->size() << " padding_size=" << padding_size << std::endl;
     if (tensor.shape().dim_size(0) != batch->size() + padding_size) {
       return errors::FailedPrecondition(
           "Batched output tensor's 0th dimension does not equal the sum of the "
@@ -570,14 +570,15 @@ void BatchingSession::ProcessBatch(
     const TensorSignature& signature,
     std::unique_ptr<Batch<BatchingSessionTask>> batch) {
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() start size=" << batch.get()->size() << ". WaitUntilClosed()..." << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() start size=" << batch.get()->size() << ". WaitUntilClosed()..." << std::endl;
+  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " BatchingSession::ProcessBatch()size=" << batch.get()->size() << "\n";
 
   // As a possible performance optimization, consider overlapping the tensor
   // concatenation with waiting for the batch to close (i.e. do the
   // concatenation incrementally as tasks stream into the batch).
   batch->WaitUntilClosed();
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " <<std::this_thread::get_id() << " BatchingSession::ProcessBatch() batch closed" << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " <<std::this_thread::get_id() << " BatchingSession::ProcessBatch() batch closed" << std::endl;
 
   if (batch->empty()) {
     std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " <<std::this_thread::get_id() << " BatchingSession::ProcessBatch() batch is empty...returning" << std::endl;
@@ -634,24 +635,24 @@ void BatchingSession::ProcessBatch(
   }
 
   std::vector<std::pair<string, Tensor>> merged_inputs;
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merge input tensors" << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merge input tensors" << std::endl;
 
   status = MergeInputTensors(signature, *batch, &merged_inputs);
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merge input tensors COMPLETED" << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merge input tensors COMPLETED" << std::endl;
 
-  for (int i=0; i< merged_inputs.size(); i++) {
-    std::cout << "merged_inputs=" << merged_inputs[i].first << ": ";
-    for(int j=0; j < merged_inputs[i].second.shape().dims(); j++ ) {
-      std::cout << merged_inputs[i].second.shape().dim_size(j) << ",";
-    }
-    std::cout << std::endl;
-    //std::cout << "SplitOutputTensors() dim[" << i << "]=" << tensor.shape().dim_size(i) << std::endl;
-  }
+  // for (int i=0; i< merged_inputs.size(); i++) {
+  //   std::cout << "merged_inputs=" << merged_inputs[i].first << ": ";
+  //   for(int j=0; j < merged_inputs[i].second.shape().dims(); j++ ) {
+  //     std::cout << merged_inputs[i].second.shape().dim_size(j) << ",";
+  //   }
+  //   std::cout << std::endl;
+  //   //std::cout << "SplitOutputTensors() dim[" << i << "]=" << tensor.shape().dim_size(i) << std::endl;
+  // }
 
   if (!status.ok()) {
     return;
   }
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merge input tensors status OK" << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merge input tensors status OK" << std::endl;
 
   const std::vector<string> output_tensor_names(
       signature.output_tensors.begin(), signature.output_tensors.end());
@@ -659,50 +660,50 @@ void BatchingSession::ProcessBatch(
   RunMetadata run_metadata;
 
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() running Wrapped Session" << " typeid=" << typeid(wrapped_.get()).name() << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() running Wrapped Session" << " typeid=" << typeid(wrapped_.get()).name() << std::endl;
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merged_inputs size=" << merged_inputs.size() << std::endl;
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() merged_inputs size=" << merged_inputs.size() << std::endl;
 
   status = wrapped_->Run(run_options, merged_inputs, output_tensor_names,
                          {} /* target node names */, &combined_outputs,
                          &run_metadata);
   
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() running Wrapped Session COMPLETED" << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() running Wrapped Session COMPLETED" << std::endl;  
 
 
   const std::vector<string> output_tensors(signature.output_tensors.begin(),
                                            signature.output_tensors.end());
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() running Wrapped Session declared output_tensors" << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() running Wrapped Session declared output_tensors" << std::endl;  
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() combined_outputs size=" << combined_outputs.size() << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() combined_outputs size=" << combined_outputs.size() << std::endl;  
 
-  for(int i=0; i < combined_outputs.size(); i++ ) {
-    std::cout << "combined_outputs i:" << i << "   " << output_tensors[i] << "   ";
+  // for(int i=0; i < combined_outputs.size(); i++ ) {
+  //   std::cout << "combined_outputs i:" << i << "   " << output_tensors[i] << "   ";
 
-    for(int j=0; j < combined_outputs[i].shape().dims(); j++ ) {
-      std::cout << combined_outputs[i].shape().dim_size(j) << ",";
-    }
-    std::cout << std::endl;
-  }
+  //   for(int j=0; j < combined_outputs[i].shape().dims(); j++ ) {
+  //     std::cout << combined_outputs[i].shape().dim_size(j) << ",";
+  //   }
+  //   std::cout << std::endl;
+  // }
   
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() num_tasks=" << batch->num_tasks() << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() num_tasks=" << batch->num_tasks() << std::endl;  
 
   for (int i = 0; i < batch->num_tasks(); ++i) {
     *(batch->mutable_task(i)->run_metadata) = run_metadata;
   }
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() set run metadata on all tasks" << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() set run metadata on all tasks" << std::endl;  
 
   if (!status.ok()) {
     return;
   }
 
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() splitting output tensors" << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() splitting output tensors" << std::endl;  
 
   status = SplitOutputTensors(signature, combined_outputs, batch.get());
-  std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() splitting output tensors COMPLETED" << std::endl;  
+  // std::cout << std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) << " " << std::this_thread::get_id() << " BatchingSession::ProcessBatch() splitting output tensors COMPLETED" << std::endl;  
 }
 
 Status CreateBatchingSession(
