@@ -197,8 +197,8 @@ cc_library(
     name = "cleanup",
     hdrs = ["cleanup.h"],
     deps = [
-        #"@org_tensorflow//tensorflow/core:lib",
-        "//tensorflow/core:lib",
+        "@org_tensorflow//tensorflow/core:lib",
+        #"//tensorflow/core:lib",
     ],
 )
 
