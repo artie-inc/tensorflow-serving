@@ -475,6 +475,17 @@ Status BatchingSession::MergeInputTensors(
       }
     }
   }
+
+  for (auto const& x : tensors_to_merge) {
+      std::cout << x.first  // string (key)
+                << ':' 
+                << x.second.size() // string's value 
+                << std::endl ;
+      
+      // std::cout 
+      // auto output_c = outputs[0].scalar<float>();
+  }
+
   t_end = std::chrono::high_resolution_clock::now();
   double elapsed_time_ms_populated = std::chrono::duration<double,  std::milli>(t_end-t_start).count();
   t_start = std::chrono::high_resolution_clock::now();
@@ -490,6 +501,7 @@ Status BatchingSession::MergeInputTensors(
   int total_pushbacks = 0;
   double elapsed_time_ms_concat_total = 0;
   int total_concats = 0;
+  std::vector<double> times;
   for (const string& tensor_name : signature.input_tensors) {
     auto tensors = tensors_to_merge.find(tensor_name);
     DCHECK(tensors != tensors_to_merge.end());
@@ -503,6 +515,7 @@ Status BatchingSession::MergeInputTensors(
     const Status concat_status = tensor::Concat(tensors->second, &concated);
     auto t_end_c = std::chrono::high_resolution_clock::now();
     double elapsed_time_ms_concat = std::chrono::duration<double,  std::milli>(t_end_c-t_start_c).count();
+    times.push_back(elapsed_time_ms_concat);
     elapsed_time_ms_concat_total += elapsed_time_ms_concat;
     total_concats++;
 
@@ -518,6 +531,14 @@ Status BatchingSession::MergeInputTensors(
     elapsed_time_ms_pushback_total += elapsed_time_ms_pushback;
     total_pushbacks++;
   }
+
+
+  std::cout << timeSinceEpochMillisec() << " " <<std::this_thread::get_id() <<" BatchingSession::MergeInputTensors() concatTimes=";
+  for(int i=0; i < times.size(); i++) {
+    std::cout << times[i] << ", ";
+  }
+  std::cout << std::endl;
+
 
   t_end = std::chrono::high_resolution_clock::now();
   double elapsed_time_ms_merged = std::chrono::duration<double,  std::milli>(t_end-t_start).count();
