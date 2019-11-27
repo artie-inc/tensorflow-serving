@@ -18,6 +18,7 @@ limitations under the License.
 #include <stddef.h>
 #include <iostream>
 #include <thread>
+// #include <gperftools/profiler.h>
 
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor_shape.h"
@@ -511,9 +512,13 @@ Status BatchingSession::MergeInputTensors(
     }
     Tensor concated;
     
-    auto t_start_c = std::chrono::high_resolution_clock::now();
+    // auto t_start_c = std::chrono::high_resolution_clock::now();
+    auto t_start_c = std::chrono::steady_clock::now();
+    //ProfilerStart("libds.prof"); 
     const Status concat_status = tensor::Concat(tensors->second, &concated);
-    auto t_end_c = std::chrono::high_resolution_clock::now();
+    //ProfilerStop();
+    // auto t_end_c = std::chrono::high_resolution_clock::now();
+    auto t_end_c = std::chrono::steady_clock::now();
     double elapsed_time_ms_concat = std::chrono::duration<double,  std::milli>(t_end_c-t_start_c).count();
     times.push_back(elapsed_time_ms_concat);
     elapsed_time_ms_concat_total += elapsed_time_ms_concat;
