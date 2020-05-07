@@ -65,7 +65,7 @@ cc_library(
         #"@org_tensorflow//tensorflow/core:tensorflow",
         #"@org_tensorflow//tensorflow/core/kernels/batching_util:basic_batch_scheduler",
         #"@org_tensorflow//tensorflow/core/kernels/batching_util:batch_scheduler",
-        "@org_tensorflow//tensorflow/core/profiler/lib:traceme",
+        #"@org_tensorflow//tensorflow/core/profiler/lib:traceme",
         "//tensorflow/core:core_cpu",
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
